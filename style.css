@@ -1,0 +1,31 @@
+/* Background gradient */
+[data-testid="stAppViewContainer"] {
+    background: linear-gradient(135deg, #a8edea, #fed6e3);
+}
+
+/* Sidebar background */
+[data-testid="stSidebar"] {
+    background: #ffffffdd;
+    backdrop-filter: blur(10px);
+}
+
+/* Login Card */
+.stTextInput, .stPasswordInput {
+    border-radius: 12px !important;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+.stButton > button {
+    background: linear-gradient(315deg, #6a11cb 0%, #2575fc 74%);
+    color: white;
+    border-radius: 10px;
+    padding: 8px 20px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.stButton > button:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
+}

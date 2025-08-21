@@ -1,1 +1,51 @@
-{}
+{
+    "babu": {
+        "password": "166f35e44c9f139c9f98aa9da61dc9f9d61bc86088d7968477c055e8d31a06f7",
+        "journal": [
+            "2025-08-22: today i started doing my project in hackathon\n",
+            "2025-08-22: today i came to saveetha for hackaton"
+        ],
+        "habits": {
+            "coding practice done": true,
+            "workout": true
+        }
+    },
+    "king2316": {
+        "password": "095bd725ce5687fb57da31700bd214f1165170468a996a7a21071df91e5f9cfa",
+        "journal": [],
+        "habits": {}
+    },
+    "Praanesh": {
+        "password": "17ff950da83eff4559de34705d589d7bed299f5c7e6247f4c7711e53db394143",
+        "journal": [],
+        "habits": {}
+    },
+    "Praaneshs": {
+        "password": "17ff950da83eff4559de34705d589d7bed299f5c7e6247f4c7711e53db394143",
+        "journal": [
+            "2025-08-22: very worst day but feeling motivated that i can do something hereafter"
+        ],
+        "habits": {}
+    },
+    "santo": {
+        "password": "1ea2f89d934cb4a2af0b486736609cf9cb4bdafdc6e946e79aecb02b9d9dceb4",
+        "journal": [
+            "2025-08-22: today i felt very lonely and alone"
+        ],
+        "habits": {
+            "walk": true,
+            "run": false,
+            "jump": true
+        }
+    },
+    "aswin": {
+        "password": "9552e277ebcc7fa191292c6e900d94dfe6e837d8abf76a2da927d4530d2c8f69",
+        "journal": [
+            "2025-08-22: my project is done in a better way\n"
+        ],
+        "habits": {
+            "mediation": true,
+            "workout": true
+        }
+    }
+}

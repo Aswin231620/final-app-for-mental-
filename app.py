@@ -4,6 +4,7 @@ import os
 import hashlib
 import datetime
 import openai
+import pandas as pd  # NEW: for the progress table
 
 # ------------------ CONFIG ------------------
 openai.api_key = os.getenv("OPENAI_API_KEY")  # set in terminal before run
@@ -47,7 +48,7 @@ def chat_with_ai(prompt, username):
     user_data = users.get(username, {})
     journal = " ".join(user_data.get("journal", []))
     habits = user_data.get("habits", {})
-    habit_summary = ", ".join([f"{h}:{'Done' if v else 'Missed'}" for h,v in habits.items()])
+    habit_summary = ", ".join([f"{h}:{'Done' if v else 'Missed'}" for h, v in habits.items()])
 
     context = f"User journal: {journal}\nUser habits: {habit_summary}\nNow respond to user in a friendly supportive way."
 
@@ -60,8 +61,73 @@ def chat_with_ai(prompt, username):
     )
     return response.choices[0].message.content
 
+# ------------------ CUSTOM CSS ------------------
+st.markdown("""
+    <style>
+    /* Background gradient */
+    [data-testid="stAppViewContainer"] {
+        background: linear-gradient(135deg, #a8edea, #fed6e3);
+    }
+
+    /* Sidebar background */
+    [data-testid="stSidebar"] {
+        background: #ffffffdd;
+        backdrop-filter: blur(10px);
+    }
+
+    /* Input fields */
+    .stTextInput > div > div > input,
+    .stPasswordInput > div > div > input {
+        border-radius: 12px !important;
+        padding: 10px !important;
+        border: 1px solid #ccc !important;
+    }
+
+    /* Buttons */
+    .stButton > button {
+        background: linear-gradient(90deg,#ff6a00,#ee0979);
+        color:white;
+        border-radius: 20px;
+        padding:10px 24px;
+        font-size:16px;
+        font-weight:bold;
+        transition: all 0.3s ease;
+    }
+    .stButton > button:hover {
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0px 6px 20px rgba(0,0,0,0.3);
+    }
+
+    /* Tabs */
+    .stTabs [role="tablist"] button {
+        font-size:16px;
+        font-weight:600;
+        padding:10px 20px;
+        border-radius: 10px;
+        margin: 0 5px;
+        background: #ffffffaa;
+        transition: 0.3s;
+    }
+    .stTabs [role="tablist"] button:hover {
+        background: linear-gradient(135deg, #6a11cb, #2575fc);
+        color:white;
+    }
+    .stTabs [aria-selected="true"] {
+        background: linear-gradient(135deg, #6a11cb, #2575fc) !important;
+        color:white !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 # ------------------ MAIN APP ------------------
-st.title("🧠 Mental Health Companion App")
+st.markdown("""
+    <div style="text-align:center; padding:20px;">
+        <h1 style="color:#6a11cb;">🤖 MindMate- Your AI-Powered Mental Wellness 🧘 </h1>
+        <p style="font-size:18px; color:#333;">
+            Your personal AI-powered journaling & habit tracking buddy 
+        </p>
+    </div>
+""", unsafe_allow_html=True)
 
 menu = ["Login", "Sign Up"]
 choice = st.sidebar.selectbox("Menu", menu)
@@ -111,11 +177,17 @@ if "username" in st.session_state:
             users[st.session_state["username"]]["journal"].append(entry)
             save_users(users)
             st.success("✍️ Journal saved!")
+
         st.subheader("Previous Entries")
         for j in load_users()[st.session_state["username"]]["journal"]:
-            st.write("-", j)
+            st.markdown(f"""
+                <div style="background:#fff;padding:15px;margin:10px 0;
+                            border-radius:12px;box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+                    📝 {j}
+                </div>
+            """, unsafe_allow_html=True)
 
-    # Habit Tracker
+    # Habit Tracker (UPDATED: hides JSON, shows Date + Progress table)
     with tabs[2]:
         st.header("Daily Habit Checker")
         users = load_users()
@@ -129,8 +201,9 @@ if "username" in st.session_state:
                 save_users(users)
                 st.success("✅ Habit added!")
 
+        # Checkboxes for today's habits
         for habit, done in habits.items():
-            checked = st.checkbox(habit, value=done)
+            checked = st.checkbox(habit, value=done, key=f"habit_{habit}")
             habits[habit] = checked
 
         if st.button("Save Progress"):
@@ -138,5 +211,19 @@ if "username" in st.session_state:
             save_users(users)
             st.success("📊 Habits updated!")
 
-        st.subheader("Your Habits")
-        st.write(habits)
+        # ---- Pretty table instead of white JSON box ----
+        st.subheader("📅 Today's Habit Progress")
+        if habits:
+            today = str(datetime.date.today())
+            rows = [{"Date": today, "Habit": h, "Status": "✅ Done" if v else "❌ Missed"} for h, v in habits.items()]
+            df = pd.DataFrame(rows)
+            st.dataframe(df, use_container_width=True)
+
+            # Progress Bar
+            completed = sum(v for v in habits.values())
+            total = len(habits)
+            if total > 0:
+                st.progress(completed / total)
+                st.success(f"✅ {completed}/{total} habits done today!")
+        else:
+            st.info("No habits yet. Add one above ⬆️")
